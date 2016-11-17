@@ -26,15 +26,17 @@ def target_func(x):
 
 
 num_points = 1000
-vectors_set = []
+x_data = []
+y_data = []
 for i in range(num_points):
     x1 = np.random.normal(0.0, 1.0)
     x2 = np.random.normal(0.0, 1.0)
-    y = target_func([x1, x2])
-    vectors_set.append([x1, x2, y])
+    y_hat = target_func([x1, x2])
+    x_data.append([x1, x2])
+    y_data.append([y_hat])
 
-x_data = np.array([[v[0], v[1]] for v in vectors_set]).astype(np.float32)
-y_data = np.array([[v[2]] for v in vectors_set]).astype(np.float32)
+x_data = np.array(x_data).astype(np.float32)
+y_data = np.array(y_data).astype(np.float32)
 
 model = SingleNeuron(2, 1)
 optimizer = optimizers.Adam()
@@ -57,3 +59,6 @@ for epoch in range(1000):
     if epoch % 100 == 0:
         print(epoch, accum_loss.data)
         accum_loss = None
+
+print("W = %s" % model.l.W.data)
+print("b = %s" % model.l.b.data)
