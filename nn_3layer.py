@@ -42,12 +42,12 @@ for i in range(num_points):
 x_data = np.array(x_data).astype(np.float32)
 y_data = np.array(y_data).astype(np.float32)
 
-model = SimpleNN(2, 4, 1)
-optimizer = optimizers.Adam()
+model = SimpleNN(2, 3, 1)
+optimizer = optimizers.Adam(0.05)
 optimizer.setup(model)
 
 bs = 100
-for epoch in range(5000):
+for epoch in range(1000):
     accum_loss = None
     perm = np.random.permutation(num_points)
     for i in range(0, num_points, bs):
@@ -64,10 +64,10 @@ for epoch in range(5000):
     if epoch % 100 == 0:
         print(epoch, accum_loss.data)
 
-
+# テスト
 xx = [[x1 / 10.0, x2 / 10.0] for x1 in range(0, 10) for x2 in range(0, 10)]
 x = Variable(np.array(xx).astype(np.float32), volatile='on')
 y = model.forward(x)
 y_hat = [[target_func(xt)] for xt in xx]
-for x in zip(y.data.tolist(), y_hat):
-    print("%.2f <--> %.2f" % (x[0][0], x[1][0]))
+for y, y_hat in zip(y.data.tolist(), y_hat):
+    print("%.2f <--> %.2f" % (y[0], y_hat[0]))
