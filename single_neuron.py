@@ -47,8 +47,8 @@ for epoch in range(1000):
     accum_loss = None
     perm = np.random.permutation(num_points)
     for i in range(0, num_points, bs):
-        x_sample = Variable(x_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]])
-        y_sample = Variable(y_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]])
+        x_sample = x_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]]
+        y_sample = y_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]]
 
         model.cleargrads()
         loss = model.train(x_sample, y_sample)

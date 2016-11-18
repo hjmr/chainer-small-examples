@@ -51,11 +51,11 @@ for epoch in range(1000):
     accum_loss = None
     perm = np.random.permutation(num_points)
     for i in range(0, num_points, bs):
-        xt = Variable(x_data[i:(i + bs) if(i + bs < num_points) else num_points])
-        yt = Variable(y_data[i:(i + bs) if(i + bs < num_points) else num_points])
+        x_sample = x_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]]
+        y_sample = y_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]]
 
         model.cleargrads()
-        loss = model(xt, yt)
+        loss = model(x_sample, y_sample)
         accum_loss = loss if accum_loss is None else accum_loss + loss
 
     accum_loss.backward()
