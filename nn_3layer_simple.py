@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#-*- coding: utf-8 -*-
 
 import numpy as np
 import chainer.functions as F
@@ -26,47 +26,32 @@ class SimpleNN(Chain):
 
 
 def target_func(x):
-    return x[0] * 0.3 + x[1] * -1.0 + 0.5
+    y = 0.5 * x[0] - 0.8 * x[1] + 0.3
+    return y
 
-
-num_points = 1000
-x_data = []
-y_data = []
-for i in range(num_points):
-    x1 = np.random.normal(0.0, 1.0)
-    x2 = np.random.normal(0.0, 1.0)
-    y_hat = target_func([x1, x2]) + np.random.normal(0.0, 0.03)
-    x_data.append([x1, x2])
-    y_data.append([y_hat])
-
-x_data = np.array(x_data).astype(np.float32)
-y_data = np.array(y_data).astype(np.float32)
 
 model = SimpleNN(2, 3, 1)
 optimizer = optimizers.Adam(0.05)
 optimizer.setup(model)
 
-bs = 100
 for epoch in range(1000):
-    accum_loss = None
-    perm = np.random.permutation(num_points)
-    for i in range(0, num_points, bs):
-        x_sample = x_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]]
-        y_sample = y_data[perm[i:(i + bs) if(i + bs < num_points) else num_points]]
 
-        model.cleargrads()
-        loss = model.train(x_sample, y_sample)
-        accum_loss = loss if accum_loss is None else accum_loss + loss
+    xx = [[np.random.uniform(0, 1), np.random.uniform(0, 1)] for i in range(1000)]
+    yy = [[target_func(x)] for x in xx]
+    x = np.array(xx).astype(np.float32)
+    y_hat = np.array(yy).astype(np.float32)
 
-    accum_loss.backward()
+    model.cleargrads()
+    loss = model.train(x, y_hat)
+    loss.backward()
     optimizer.update()
 
     if epoch % 100 == 0:
-        print(epoch, accum_loss.data)
+        print(epoch, loss.data)
 
 # テスト
 xx = [[x1 / 10.0, x2 / 10.0] for x1 in range(0, 10) for x2 in range(0, 10)]
-x = Variable(np.array(xx).astype(np.float32), volatile='on')
+x = np.array(xx).astype(np.float32)
 y = model.forward(x)
 y_hat = [[target_func(xt)] for xt in xx]
 for y, y_hat in zip(y.data.tolist(), y_hat):

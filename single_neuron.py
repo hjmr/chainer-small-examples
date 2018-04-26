@@ -1,7 +1,7 @@
 import numpy as np
 import chainer.functions as F
 import chainer.links as L
-from chainer import Chain, Variable, optimizers
+from chainer import Chain, optimizers
 
 
 class SingleNeuron(Chain):
